@@ -50,8 +50,7 @@ def mostconnected(G):
     """ Return the list of words that are directly linked to the most other words in G
 
     """
-    res = []
-    maxi = 0
+    (res,maxi) = ([],0)
     for i in range(G.order):
         if maxi < len(G.adjlists[i]):
             res = []
@@ -152,8 +151,7 @@ def ladder(G, start, end):
     """ Return a *ladder* to the *doublet* (start, end) in G
 
     """
-    p = [None] * G.order
-    L = []
+    (p,L) = ([None] * G.order,[])
     __ladder(G, start, end, p)
     if p[G.labels.index(end)] == None:
         return []
