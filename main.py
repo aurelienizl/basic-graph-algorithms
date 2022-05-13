@@ -266,11 +266,30 @@ def components(G):
             __components(G, M, s)
     return [[i],[M]]
 
-    
 
+def path_bfs(G,start,end):
+    M = [None] * G.order
+    M[start] = -1
+    q = queue.Queue()
+    q.enqueue(start)
+    while not q.isempty():
+        x = q.dequeue()
+        for y in G.adjlists[x]:
+            if M[y] == None:
+                M[y] = x
+                q.enqueue(y)
+    if M[start] == None or M[end] == None:
+        return []
+    else:
+        L = []
+        while end != -1:
+            L.append(end)
+            end = M[end]
+        L.reverse()
+        return L        
 
-G3 = buildgraph("lexicons/lex_some.txt", 3)
-print(components(G3))
+"""G3 = buildgraph("lexicons/lex_some.txt", 3)
+print(path(G3,0,2))"""
 
 """
 print("###############################################################################")
