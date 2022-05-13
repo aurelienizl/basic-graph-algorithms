@@ -457,5 +457,3 @@ def test():
 
     end = time.time()
     print("The time of execution of above function is :", end-start)
-
-test()
