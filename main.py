@@ -447,9 +447,9 @@ def test():
 
     print("Longest Doublet : ")
 
-    if (all(item in longestdoublet(G3) for item in ('ape', 'one', 10)) or
-        all(item in longestdoublet(G3) for item in ('one', 'tea', 10)))\
-            and all(item in longestdoublet(G4) for item in ('tree', 'five', 13)):
+    if (all(item in longestdoublet_v1(G3) for item in ('ape', 'one', 10)) or
+        all(item in longestdoublet_v1(G3) for item in ('one', 'tea', 10)))\
+            and all(item in longestdoublet_v1(G4) for item in ('tree', 'five', 13)):
         print("ok")
     else:
         print("error !")
@@ -458,3 +458,4 @@ def test():
     end = time.time()
     print("The time of execution of above function is :", end-start)
 
+test()
