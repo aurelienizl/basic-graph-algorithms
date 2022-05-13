@@ -12,8 +12,6 @@ Doublet homework
 from algopy import graph, queue
 
 
-#   LEVEL 0
-
 def str_diff(str1, str2, k):
     diff = 0
     for i in range(k):
@@ -40,10 +38,6 @@ def buildgraph(filename, k):
             if str_diff(res[i], res[j], k) == 1:
                 G.addedge(i, j)
     return G
-
-
-###############################################################################
-#   LEVEL 1
 
 
 def mostconnected(G):
@@ -79,10 +73,6 @@ def ischain(G, L):
         else:
             return False
     return True
-
-
-###############################################################################
-#   LEVEL 2
 
 
 def __alldoublets(G, x, M, L):
@@ -129,9 +119,6 @@ def nosolution(G):
                 return (G.labels[index], G.labels[index2])
     return (None, None)
 
-
-###############################################################################
-#   LEVEL 3
 
 def __ladder(G, start, end, p):
     q = queue.Queue()
@@ -190,7 +177,7 @@ def longestdoublet(G):
     return (start, end, max)    # represents the spanning forest"""
 
 
-def __BFS_forest(G, val):
+def __longestdoublet(G, val):
     (M, q, M[G.labels.index(val)]) = ([-1] * G.order, queue.Queue(), 1)
     q.enqueue(G.labels.index(val))
     while not q.isempty():
@@ -208,19 +195,15 @@ def longestdoublet(G):
     """
     local_max = 0
     for i in range(G.order):
-        (first, dst, last) = __BFS_forest(G, G.labels[i])
+        (first, dst, last) = __longestdoublet(G, G.labels[i])
         local_max2 = max(dst, local_max)
         if local_max2 > local_max:
             (start, maxi, end, local_max) = (first, dst, last, local_max2)
     return (start, end, maxi)
 
 
-###############################################################################
-#   BONUS (just for the fun...)
-
-
 def isomorphic(G1, G2):
-    """BONUS: test if G1 and G2 (graphs of same length words) are isomorphic
+    """Test if G1 and G2 (graphs of same length words) are isomorphic
 
     """
     for i in range(G1.order):
@@ -324,110 +307,107 @@ def path_bfs(G, start, end):
         return L
 
 
-"""G3 = buildgraph("lexicons/lex_some.txt", 3)
-print(path(G3,0,2))"""
-
-"""
-print("###############################################################################")
-print("###                              PYTHON TESTS                               ###")
-print("###############################################################################")
-import time
+def test():
+    
+    print("###############################################################################")
+    print("###                              PYTHON TESTS                               ###")
+    print("###############################################################################")
+    import time
 
 
 
 
-print("###############################################################################")
-start = time.time()
+    print("###############################################################################")
+    start = time.time()
 
-G3 = buildgraph("lexicons/lex_some.txt", 3)
-G4 = buildgraph("lexicons/lex_some.txt", 4)
+    G3 = buildgraph("lexicons/lex_some.txt", 3)
+    G4 = buildgraph("lexicons/lex_some.txt", 4)
 
-print("Most connected : ")
+    print("Most connected : ")
 
-if mostconnected(G4) == ['ford', 'fork'] and mostconnected(G3) == ['oat', 'sat']:
-    print("ok")
-else:
-    print("error !")
-print()
+    if mostconnected(G4) == ['ford', 'fork'] and mostconnected(G3) == ['oat', 'sat']:
+        print("ok")
+    else:
+        print("error !")
+    print()
 
-end = time.time()
-print("The time of execution of above function is :", end-start)
-print()
-print("###############################################################################")
-start = time.time()
+    end = time.time()
+    print("The time of execution of above function is :", end-start)
+    print()
+    print("###############################################################################")
+    start = time.time()
 
-print("Is chain : ")
+    print("Is chain : ")
 
-if ischain(G3, ['ape', 'apt', 'opt', 'oat', 'mat', 'man']) and \
-    not ischain(G3, ['man', 'mat', 'sat', 'sit', 'pit', 'pig']) and\
-    not ischain(G3, ['ape', 'apt', 'opt', 'oat', 'mat', 'oat', 'mat', 'man']):
-    print("ok")
-else:
-    print("error !")
-print()
+    if ischain(G3, ['ape', 'apt', 'opt', 'oat', 'mat', 'man']) and \
+        not ischain(G3, ['man', 'mat', 'sat', 'sit', 'pit', 'pig']) and\
+        not ischain(G3, ['ape', 'apt', 'opt', 'oat', 'mat', 'oat', 'mat', 'man']):
+        print("ok")
+    else:
+        print("error !")
+    print()
 
-end = time.time()
-print("The time of execution of above function is :", end-start)
-print()
-print("###############################################################################")
-start = time.time()
+    end = time.time()
+    print("The time of execution of above function is :", end-start)
+    print()
+    print("###############################################################################")
+    start = time.time()
 
-print("All doublets :")
+    print("All doublets :")
 
-if all(item in alldoublets(G3, "pen") for item in 
-    ['eel', 'een', 'ell', 'ilk', 'ill', 'ink', 'pie', 'pig', 'pin', 'pit']):
-    print("ok")
-else:
-    print("error !")
-print()
+    if all(item in alldoublets(G3, "pen") for item in 
+        ['eel', 'een', 'ell', 'ilk', 'ill', 'ink', 'pie', 'pig', 'pin', 'pit']):
+        print("ok")
+    else:
+        print("error !")
+    print()
 
-end = time.time()
-print("The time of execution of above function is :", end-start)
-print()
-print("###############################################################################")
-start = time.time()
+    end = time.time()
+    print("The time of execution of above function is :", end-start)
+    print()
+    print("###############################################################################")
+    start = time.time()
 
-print("No solution : ")
+    print("No solution : ")
 
-if all(item in nosolution(G3) for item in ('ape', 'eel')) and nosolution(G4) == (None, None):
-    print("ok")
-else:
-    print("error !")
-print()
+    if all(item in nosolution(G3) for item in ('ape', 'eel')) and nosolution(G4) == (None, None):
+        print("ok")
+    else:
+        print("error !")
+    print()
 
-end = time.time()
-print("The time of execution of above function is :", end-start)
-print()
-print("###############################################################################")
-start = time.time()
+    end = time.time()
+    print("The time of execution of above function is :", end-start)
+    print()
+    print("###############################################################################")
+    start = time.time()
 
-print("Ladder : ")
+    print("Ladder : ")
 
-if all(item in ladder(G3, "ape", "man") for item in ['ape', 'apt', 'opt', 'oat', 'mat', 'man']) \
-    and ladder(G3, "man", "pig") == []\
-    and all(item in ladder(G4, "work", "food") for item in ['work', 'fork', 'ford', 'food']):
-    print("ok")
-else:
-    print("error !")
-print()
+    if all(item in ladder(G3, "ape", "man") for item in ['ape', 'apt', 'opt', 'oat', 'mat', 'man']) \
+        and ladder(G3, "man", "pig") == []\
+        and all(item in ladder(G4, "work", "food") for item in ['work', 'fork', 'ford', 'food']):
+        print("ok")
+    else:
+        print("error !")
+    print()
 
-end = time.time()
-print("The time of execution of above function is :", end-start)
-print()
-print("###############################################################################")
-start = time.time()
+    end = time.time()
+    print("The time of execution of above function is :", end-start)
+    print()
+    print("###############################################################################")
+    start = time.time()
 
-print("Longest Doublet : ")
+    print("Longest Doublet : ")
 
-if (all(item in longestdoublet(G3) for item in ('ape', 'one', 10)) or\
-    all(item in longestdoublet(G3) for item in ('one', 'tea', 10)))\
-        and all(item in longestdoublet(G4) for item in ('tree', 'five', 13)):
-    print("ok")
-else:
-    print("error !")
-print()
+    if (all(item in longestdoublet(G3) for item in ('ape', 'one', 10)) or\
+        all(item in longestdoublet(G3) for item in ('one', 'tea', 10)))\
+            and all(item in longestdoublet(G4) for item in ('tree', 'five', 13)):
+        print("ok")
+    else:
+        print("error !")
+    print()
 
-end = time.time()
-print("The time of execution of above function is :", end-start)
+    end = time.time()
+    print("The time of execution of above function is :", end-start)
 
-"""
