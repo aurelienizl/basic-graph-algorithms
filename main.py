@@ -12,7 +12,7 @@ Doublet homework
 from algopy import graph, queue
 
 
-def str_diff(str1, str2, k):
+def __buildgraph(str1, str2, k):
     diff = 0
     for i in range(k):
         if str1[i] != str2[i]:
@@ -35,7 +35,7 @@ def buildgraph(filename, k):
     G = graph.Graph(len(res), False, res)
     for i in range(len(res)):
         for j in range(i + 1, len(res)):
-            if str_diff(res[i], res[j], k) == 1:
+            if __buildgraph(res[i], res[j], k) == 1:
                 G.addedge(i, j)
     return G
 
@@ -120,7 +120,7 @@ def nosolution(G):
     return (None, None)
 
 
-def __ladder(G, start, end, p):
+def __ladder_v1(G, start, end, p):
     q = queue.Queue()
     q.enqueue(G.labels.index(start))
     p[G.labels.index(start)] = -1
@@ -134,12 +134,12 @@ def __ladder(G, start, end, p):
                 q.enqueue(y)
 
 
-def ladder(G, start, end):
+def ladder_v1(G, start, end):
     """ Return a *ladder* to the *doublet* (start, end) in G
 
     """
     (p, L) = ([None] * G.order, [])
-    __ladder(G, start, end, p)
+    __ladder_v1(G, start, end, p)
     if p[G.labels.index(end)] == None:
         return []
     else:
@@ -152,7 +152,32 @@ def ladder(G, start, end):
         return L
 
 
-"""def __BFS_forest(G, s, p, start, end, max):
+def ladder_v2(G, start, end):
+    """
+
+    """
+    M = [None] * G.order
+    M[start] = -1
+    q = queue.Queue()
+    q.enqueue(start)
+    while not q.isempty():
+        x = q.dequeue()
+        for y in G.adjlists[x]:
+            if M[y] == None:
+                M[y] = x
+                q.enqueue(y)
+    if M[start] == None or M[end] == None:
+        return []
+    else:
+        L = []
+        while end != -1:
+            L.append(end)
+            end = M[end]
+        L.reverse()
+        return L
+
+
+def __longestdoublet_v1(G, s, p, start, end, max):
     q = queue.Queue()
     start = G.labels[s]
     q.enqueue(s)
@@ -166,18 +191,23 @@ def ladder(G, start, end):
                 end = G.labels[y]
     return (start, end)
 
-def longestdoublet(G):
+
+def longestdoublet_v1(G):
+    """
+    Find in G one of the most difficult *d hj oublets* (that has the longest *ladder*)
+
+    """
     (start, end, max) = ("", "", 0)
     for s in range(G.order):
         p = [None] * G.order
-        (val1, val2) = __BFS_forest(G, s, p, start, end, max)
+        (val1, val2) = __longestdoublet_v1(G, s, p, start, end, max)
         for el in p:
             if el is not None and el > max:
                 (start, end, max) = (val2, val1, el)
-    return (start, end, max)    # represents the spanning forest"""
+    return (start, end, max)
 
 
-def __longestdoublet(G, val):
+def __longestdoublet_v2(G, val):
     (M, q, M[G.labels.index(val)]) = ([-1] * G.order, queue.Queue(), 1)
     q.enqueue(G.labels.index(val))
     while not q.isempty():
@@ -189,13 +219,13 @@ def __longestdoublet(G, val):
     return (val, M[x], G.labels[x])
 
 
-def longestdoublet(G):
+def longestdoublet_v2(G):
     """ Find in G one of the most difficult *d hj oublets* (that has the longest *ladder*)
 
     """
     local_max = 0
     for i in range(G.order):
-        (first, dst, last) = __longestdoublet(G, G.labels[i])
+        (first, dst, last) = __longestdoublet_v2(G, G.labels[i])
         local_max2 = max(dst, local_max)
         if local_max2 > local_max:
             (start, maxi, end, local_max) = (first, dst, last, local_max2)
@@ -285,37 +315,54 @@ def bipartite(G):
     return True
 
 
-def path_bfs(G, start, end):
+def more_than_dist(G, src, dist):
+    """
+    This function returns all nodes away from *dist* from the cource
+    """
     M = [None] * G.order
-    M[start] = -1
+    L = []
+    M[src] = 0
     q = queue.Queue()
-    q.enqueue(start)
+    q.enqueue(src)
     while not q.isempty():
         x = q.dequeue()
         for y in G.adjlists[x]:
             if M[y] == None:
-                M[y] = x
+                M[y] = M[x] + 1
                 q.enqueue(y)
-    if M[start] == None or M[end] == None:
-        return []
-    else:
-        L = []
-        while end != -1:
-            L.append(end)
-            end = M[end]
-        L.reverse()
-        return L
+                if M[y] > dist:
+                    L.append(y)
+    return L
+
+
+def just_than_dist(G, src, dist):
+    """
+    This function return all nodes away from dist to source
+    """
+    M = [None] * G.order
+    L = []
+    q = queue.Queue()
+    q.enqueue(src)
+    M[src] = 0
+    while not q.isempty():
+        x = q.dequeue()
+        for y in G.adjlists[x]:
+            if M[y] == None:
+                M[y] = M[x] + 1
+                if M[y] == dist:
+                    L.append(y)
+                elif M[y] > dist:
+                    return L
+                q.enqueue(y)
+    return L
 
 
 def test():
-    
+
     print("###############################################################################")
     print("###                              PYTHON TESTS                               ###")
     print("###############################################################################")
     import time
-
-
-
 
     print("###############################################################################")
     start = time.time()
@@ -340,8 +387,8 @@ def test():
     print("Is chain : ")
 
     if ischain(G3, ['ape', 'apt', 'opt', 'oat', 'mat', 'man']) and \
-        not ischain(G3, ['man', 'mat', 'sat', 'sit', 'pit', 'pig']) and\
-        not ischain(G3, ['ape', 'apt', 'opt', 'oat', 'mat', 'oat', 'mat', 'man']):
+            not ischain(G3, ['man', 'mat', 'sat', 'sit', 'pit', 'pig']) and\
+            not ischain(G3, ['ape', 'apt', 'opt', 'oat', 'mat', 'oat', 'mat', 'man']):
         print("ok")
     else:
         print("error !")
@@ -355,8 +402,8 @@ def test():
 
     print("All doublets :")
 
-    if all(item in alldoublets(G3, "pen") for item in 
-        ['eel', 'een', 'ell', 'ilk', 'ill', 'ink', 'pie', 'pig', 'pin', 'pit']):
+    if all(item in alldoublets(G3, "pen") for item in
+           ['eel', 'een', 'ell', 'ilk', 'ill', 'ink', 'pie', 'pig', 'pin', 'pit']):
         print("ok")
     else:
         print("error !")
@@ -384,9 +431,9 @@ def test():
 
     print("Ladder : ")
 
-    if all(item in ladder(G3, "ape", "man") for item in ['ape', 'apt', 'opt', 'oat', 'mat', 'man']) \
-        and ladder(G3, "man", "pig") == []\
-        and all(item in ladder(G4, "work", "food") for item in ['work', 'fork', 'ford', 'food']):
+    if all(item in ladder_v1(G3, "ape", "man") for item in ['ape', 'apt', 'opt', 'oat', 'mat', 'man']) \
+            and ladder_v1(G3, "man", "pig") == []\
+            and all(item in ladder_v1(G4, "work", "food") for item in ['work', 'fork', 'ford', 'food']):
         print("ok")
     else:
         print("error !")
@@ -400,7 +447,7 @@ def test():
 
     print("Longest Doublet : ")
 
-    if (all(item in longestdoublet(G3) for item in ('ape', 'one', 10)) or\
+    if (all(item in longestdoublet(G3) for item in ('ape', 'one', 10)) or
         all(item in longestdoublet(G3) for item in ('one', 'tea', 10)))\
             and all(item in longestdoublet(G4) for item in ('tree', 'five', 13)):
         print("ok")
