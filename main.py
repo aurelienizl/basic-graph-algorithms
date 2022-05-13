@@ -50,7 +50,7 @@ def mostconnected(G):
     """ Return the list of words that are directly linked to the most other words in G
 
     """
-    (res,maxi) = ([],0)
+    (res, maxi) = ([], 0)
     for i in range(G.order):
         if maxi < len(G.adjlists[i]):
             res = []
@@ -151,7 +151,7 @@ def ladder(G, start, end):
     """ Return a *ladder* to the *doublet* (start, end) in G
 
     """
-    (p,L) = ([None] * G.order,[])
+    (p, L) = ([None] * G.order, [])
     __ladder(G, start, end, p)
     if p[G.labels.index(end)] == None:
         return []
@@ -178,7 +178,6 @@ def ladder(G, start, end):
                 p[y] = p[x] + 1
                 end = G.labels[y]
     return (start, end)
-
 
 def longestdoublet(G):
     (start, end, max) = ("", "", 0)
@@ -239,7 +238,7 @@ def isomorphic(G1, G2):
     return True
 
 
-def __components(G,M,S):
+def __components(G, M, S):
     q = queue.Queue()
     q.enqueue(S)
     while not q.isempty():
@@ -248,6 +247,7 @@ def __components(G,M,S):
             if M[y] == None:
                 M[y] = M[x]
                 q.enqueue(y)
+
 
 def components(G):
     """
@@ -261,13 +261,48 @@ def components(G):
     i = 0
     for s in range(G.order):
         if M[s] == None:
-            i+=1
+            i += 1
             M[s] = i
             __components(G, M, s)
-    return [[i],[M]]
+    return [[i], [M]]
 
 
-def path_bfs(G,start,end):
+def __bipartite(G, s, M):
+    q = queue.Queue()
+    q.enqueue(s)
+    while not q.isempty():
+        x = q.dequeue()
+        for y in G.adjlists[x]:
+            if M[y] == None:
+                M[y] = -M[x]
+                q.enqueue(y)
+            if M[y] == M[x]:
+                return False
+    return True
+
+
+def bipartite(G):
+    """
+    A bipartite graph is an undirected graph (multigraphe), 
+    where S can be partitioned into two sets S1 and S2:
+
+    Such that:
+        ∀{u,v}∈A
+        either u∈S1 and v∈S2
+        or u∈S2 and v∈S1.
+
+    This function return true if a graph is bipartite or false if it's not. 
+    """
+    M = [None] * G.order
+    for s in range(G.order):
+        if M[s] == None:
+            M[s] = 1
+            if not __bipartite(G, s, M):
+                return False
+    return True
+
+
+def path_bfs(G, start, end):
     M = [None] * G.order
     M[start] = -1
     q = queue.Queue()
@@ -286,7 +321,8 @@ def path_bfs(G,start,end):
             L.append(end)
             end = M[end]
         L.reverse()
-        return L        
+        return L
+
 
 """G3 = buildgraph("lexicons/lex_some.txt", 3)
 print(path(G3,0,2))"""
