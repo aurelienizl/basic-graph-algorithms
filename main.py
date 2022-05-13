@@ -204,7 +204,7 @@ def __BFS_forest(G, val):
 
 
 def longestdoublet(G):
-    """ Find in G one of the most difficult *doublets* (that has the longest *ladder*)
+    """ Find in G one of the most difficult *d hj oublets* (that has the longest *ladder*)
 
     """
     local_max = 0
@@ -238,6 +238,39 @@ def isomorphic(G1, G2):
                         return False
     return True
 
+
+def __components(G,M,S):
+    q = queue.Queue()
+    q.enqueue(S)
+    while not q.isempty():
+        x = q.dequeue()
+        for y in G.adjlists[x]:
+            if M[y] == None:
+                M[y] = M[x]
+                q.enqueue(y)
+
+def components(G):
+    """
+    The function returns the pair:
+
+    Number of connected components,
+    The component vector: for each vertex the number of the component it belongs to.
+
+    """
+    M = [None] * G.order
+    i = 0
+    for s in range(G.order):
+        if M[s] == None:
+            i+=1
+            M[s] = i
+            __components(G, M, s)
+    return [[i],[M]]
+
+    
+
+
+G3 = buildgraph("lexicons/lex_some.txt", 3)
+print(components(G3))
 
 """
 print("###############################################################################")
