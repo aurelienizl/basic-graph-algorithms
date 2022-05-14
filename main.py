@@ -379,7 +379,7 @@ def interval(G, src, min, max):
     return L
 
 
-def __acyclic(G,s,M):
+def __acyclic(G, s, M):
     M[s] = 1
     for y in G.adjlists[s]:
         if M[y] == None:
@@ -399,11 +399,12 @@ def acyclic(G):
     M = [None] * G.order
     for s in range(G.order):
         if M[s] == None:
-            if not __acyclic(G,s,M):
+            if not __acyclic(G, s, M):
                 return False
     return True
 
-def __is_cyclic(G,s):
+
+def __is_cyclic(G, s):
     P = [None] * G.order
     q = queue.Queue()
     q.enqueue(s)
@@ -417,6 +418,7 @@ def __is_cyclic(G,s):
                 q.enqueue(y)
     return False
 
+
 def is_cyclic(G):
     """
     Return a boolean, true if a back edge was found //WARNING : THIS FUNCTION IS PROBABLY NOT WORKING IN EVERY CASES ! REVIEW NEDEED
@@ -425,9 +427,33 @@ def is_cyclic(G):
     for s in range(G.order):
         if M[s] == None:
             M[s] = 1
-            if __is_cyclic(G,s):
+            if __is_cyclic(G, s):
                 return True
     return False
+
+
+def levels(G, src):
+    M = [None] * G.order
+    M[src] = 0
+    LEVELS = []
+    DIST = 0
+    L = []
+    q = queue.Queue()
+    q.enqueue(src)
+    while not q.isempty():
+        x = q.dequeue()
+        if M[x] > DIST:
+            L.append(LEVELS)
+            LEVELS = [x]
+            DIST += 1
+        else:
+            LEVELS.append(x)
+        for y in G.adjlists[x]:
+            if M[y] == None:
+                M[y] = M[x] + 1
+                q.enqueue(y)
+    return L
+
 
 def test():
 
