@@ -357,6 +357,25 @@ def just_than_dist(G, src, dist):
     return L
 
 
+def interval(G, src, min, max):
+    M = [None] * G.order
+    M[src] = 0
+    L = []
+    q = queue.Queue()
+    q.enqueue(src)
+    while not q.isempty():
+        x = q.dequeue()
+        for y in G.adjlists[x]:
+            if M[y] == None:
+                M[y] = M[x] + 1
+                if M[y] >= min and M[y] <= max:
+                    L.append(y)
+                elif M[y] > max:
+                    return L
+                q.enqueue(y)
+    return L
+
+
 def test():
 
     print("###############################################################################")
