@@ -358,6 +358,9 @@ def just_than_dist(G, src, dist):
 
 
 def interval(G, src, min, max):
+    """
+    This function returns all nodes that are at a distance between min and max from src
+    """
     M = [None] * G.order
     M[src] = 0
     L = []
@@ -375,6 +378,56 @@ def interval(G, src, min, max):
                 q.enqueue(y)
     return L
 
+
+def __acyclic(G,s,M):
+    M[s] = 1
+    for y in G.adjlists[s]:
+        if M[y] == None:
+            if not __acyclic(G, y, M):
+                return False
+            else:
+                if M[y] != 2:
+                    return False
+    M[s] = 2
+    return True
+
+
+def acyclic(G):
+    """
+    Return a boolean, false if a back edge was found
+    """
+    M = [None] * G.order
+    for s in range(G.order):
+        if M[s] == None:
+            if not __acyclic(G,s,M):
+                return False
+    return True
+
+def __is_cyclic(G,s):
+    P = [None] * G.order
+    q = queue.Queue()
+    q.enqueue(s)
+    while not q.isempty():
+        x = q.dequeue()
+        for y in G.adjlists[x]:
+            if y == s and not x == s:
+                return True
+            elif P[y] == None:
+                P[y] = 1
+                q.enqueue(y)
+    return False
+
+def is_cyclic(G):
+    """
+    Return a boolean, true if a back edge was found //WARNING : THIS FUNCTION IS PROBABLY NOT WORKING IN EVERY CASES ! REVIEW NEDEED
+    """
+    M = [None] * G.order
+    for s in range(G.order):
+        if M[s] == None:
+            M[s] = 1
+            if __is_cyclic(G,s):
+                return True
+    return False
 
 def test():
 
