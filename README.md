@@ -53,3 +53,5 @@ Please make sure to update tests as appropriate.
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 
+
+[![CodeFactor](https://www.codefactor.io/repository/github/aurelienizl/basic-graph-algorithms/badge)](https://www.codefactor.io/repository/github/aurelienizl/basic-graph-algorithms)
