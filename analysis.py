@@ -54,27 +54,6 @@ def mostconnected(G):
     return res
 
 
-def ischain(G, L):
-    """ Test if L (word list) is a valid elementary *chain* in the graph G
-
-    """
-    for i in range(len(L)):
-        if L[i] not in G.labels:
-            return False
-        for j in range(i+1, len(L)):
-            if L[i] == L[j]:
-                return False
-    is_chain = True
-    for i in range(len(L) - 1):
-        if is_chain:
-            one = G.labels.index(L[i])
-            two = G.labels.index(L[i+1])
-            chain = two in G.adjlists[one]
-        else:
-            return False
-    return True
-
-
 def __alldoublets(G, x, M, L):
     M[x] = True
     for y in G.adjlists[x]:
@@ -232,25 +211,6 @@ def longestdoublet_v2(G):
     return (start, end, maxi)
 
 
-def isomorphic(G1, G2):
-    """Test if G1 and G2 (graphs of same length words) are isomorphic
-
-    """
-    for i in range(G1.order):
-        if G1.labels[i] not in G2.labels:
-            return False
-        else:
-            if len(G1.adjlists[i]) != len(G2.adjlists[G2.labels.index(G1.labels[i])]):
-                return False
-            for j in G1.adjlists[i]:
-                if G1.labels[j] not in G2.labels:
-                    return False
-                else:
-                    if G2.labels.index(G1.labels[j]) not in G2.adjlists[G2.labels.index(G1.labels[i])]:
-                        return False
-    return True
-
-
 def __components(G, M, S):
     q = queue.Queue()
     q.enqueue(S)
@@ -278,41 +238,6 @@ def components(G):
             M[s] = i
             __components(G, M, s)
     return [[i], [M]]
-
-
-def __bipartite(G, s, M):
-    q = queue.Queue()
-    q.enqueue(s)
-    while not q.isempty():
-        x = q.dequeue()
-        for y in G.adjlists[x]:
-            if M[y] == None:
-                M[y] = -M[x]
-                q.enqueue(y)
-            if M[y] == M[x]:
-                return False
-    return True
-
-
-def bipartite(G):
-    """
-    A bipartite graph is an undirected graph (multigraphe), 
-    where S can be partitioned into two sets S1 and S2:
-
-    Such that:
-        ∀{u,v}∈A
-        either u∈S1 and v∈S2
-        or u∈S2 and v∈S1.
-
-    This function return true if a graph is bipartite or false if it's not. 
-    """
-    M = [None] * G.order
-    for s in range(G.order):
-        if M[s] == None:
-            M[s] = 1
-            if not __bipartite(G, s, M):
-                return False
-    return True
 
 
 def more_than_dist(G, src, dist):
@@ -379,59 +304,6 @@ def interval(G, src, min, max):
     return L
 
 
-def __acyclic(G, s, M):
-    M[s] = 1
-    for y in G.adjlists[s]:
-        if M[y] == None:
-            if not __acyclic(G, y, M):
-                return False
-            else:
-                if M[y] != 2:
-                    return False
-    M[s] = 2
-    return True
-
-
-def acyclic(G):
-    """
-    Return a boolean, false if a back edge was found
-    """
-    M = [None] * G.order
-    for s in range(G.order):
-        if M[s] == None:
-            if not __acyclic(G, s, M):
-                return False
-    return True
-
-
-def __is_cyclic(G, s):
-    P = [None] * G.order
-    q = queue.Queue()
-    q.enqueue(s)
-    while not q.isempty():
-        x = q.dequeue()
-        for y in G.adjlists[x]:
-            if y == s and not x == s:
-                return True
-            elif P[y] == None:
-                P[y] = 1
-                q.enqueue(y)
-    return False
-
-
-def is_cyclic(G):
-    """
-    Return a boolean, true if a back edge was found //WARNING : THIS FUNCTION IS PROBABLY NOT WORKING IN EVERY CASES ! REVIEW NEDEED
-    """
-    M = [None] * G.order
-    for s in range(G.order):
-        if M[s] == None:
-            M[s] = 1
-            if __is_cyclic(G, s):
-                return True
-    return False
-
-
 def levels(G, src):
     M = [None] * G.order
     M[src] = 0
@@ -453,105 +325,3 @@ def levels(G, src):
                 M[y] = M[x] + 1
                 q.enqueue(y)
     return L
-
-
-def test():
-
-    print("###############################################################################")
-    print("###                              PYTHON TESTS                               ###")
-    print("###############################################################################")
-    import time
-
-    print("###############################################################################")
-    start = time.time()
-
-    G3 = buildgraph("lexicons/lex_some.txt", 3)
-    G4 = buildgraph("lexicons/lex_some.txt", 4)
-
-    print("Most connected : ")
-
-    if mostconnected(G4) == ['ford', 'fork'] and mostconnected(G3) == ['oat', 'sat']:
-        print("ok")
-    else:
-        print("error !")
-    print()
-
-    end = time.time()
-    print("The time of execution of above function is :", end-start)
-    print()
-    print("###############################################################################")
-    start = time.time()
-
-    print("Is chain : ")
-
-    if ischain(G3, ['ape', 'apt', 'opt', 'oat', 'mat', 'man']) and \
-            not ischain(G3, ['man', 'mat', 'sat', 'sit', 'pit', 'pig']) and\
-            not ischain(G3, ['ape', 'apt', 'opt', 'oat', 'mat', 'oat', 'mat', 'man']):
-        print("ok")
-    else:
-        print("error !")
-    print()
-
-    end = time.time()
-    print("The time of execution of above function is :", end-start)
-    print()
-    print("###############################################################################")
-    start = time.time()
-
-    print("All doublets :")
-
-    if all(item in alldoublets(G3, "pen") for item in
-           ['eel', 'een', 'ell', 'ilk', 'ill', 'ink', 'pie', 'pig', 'pin', 'pit']):
-        print("ok")
-    else:
-        print("error !")
-    print()
-
-    end = time.time()
-    print("The time of execution of above function is :", end-start)
-    print()
-    print("###############################################################################")
-    start = time.time()
-
-    print("No solution : ")
-
-    if all(item in nosolution(G3) for item in ('ape', 'eel')) and nosolution(G4) == (None, None):
-        print("ok")
-    else:
-        print("error !")
-    print()
-
-    end = time.time()
-    print("The time of execution of above function is :", end-start)
-    print()
-    print("###############################################################################")
-    start = time.time()
-
-    print("Ladder : ")
-
-    if all(item in ladder_v1(G3, "ape", "man") for item in ['ape', 'apt', 'opt', 'oat', 'mat', 'man']) \
-            and ladder_v1(G3, "man", "pig") == []\
-            and all(item in ladder_v1(G4, "work", "food") for item in ['work', 'fork', 'ford', 'food']):
-        print("ok")
-    else:
-        print("error !")
-    print()
-
-    end = time.time()
-    print("The time of execution of above function is :", end-start)
-    print()
-    print("###############################################################################")
-    start = time.time()
-
-    print("Longest Doublet : ")
-
-    if (all(item in longestdoublet_v1(G3) for item in ('ape', 'one', 10)) or
-        all(item in longestdoublet_v1(G3) for item in ('one', 'tea', 10)))\
-            and all(item in longestdoublet_v1(G4) for item in ('tree', 'five', 13)):
-        print("ok")
-    else:
-        print("error !")
-    print()
-
-    end = time.time()
-    print("The time of execution of above function is :", end-start)
