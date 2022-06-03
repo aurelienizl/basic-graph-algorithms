@@ -5,7 +5,7 @@ Basic Graph Algorithms is a graph manipulation project. This project brings toge
 
 ## Installation
 
-For Ubuntu 16.04 LTS +
+For APT package manager :
 
 ```bash
 sudo apt install python3 -y && pip install graphviz IPython
