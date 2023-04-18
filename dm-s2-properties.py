@@ -11,7 +11,6 @@ Doublet homework
 
 from algopy import graph, queue
 
-
 def __buildgraph(str1, str2, k):
     diff = 0
     for i in range(k):
