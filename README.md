@@ -326,6 +326,95 @@ This function returns the levels of the input graph `G` starting from the source
 
 -   `L`: A list of lists, where each inner list represents a level of nodes at the same distance from the source node.
 
+### `buildgraph(filename, k)`
+
+This function builds and returns a graph with words of length `k` from the lexicon in the given file.
+
+#### Parameters
+
+-   `filename`: The name of the file containing the lexicon.
+-   `k`: The length of the words to be considered.
+
+#### Returns
+
+-   `G`: A graph created using words of length `k` from the lexicon in the file.
+
+### `isomorphic(G1, G2)`
+
+This function tests if two input graphs, `G1` and `G2`, containing words of the same length, are isomorphic.
+
+#### Parameters
+
+-   `G1`: The first input graph.
+-   `G2`: The second input graph.
+
+#### Returns
+
+-   A boolean value indicating whether the two graphs are isomorphic.
+
+### `ischain(G, L)`
+
+This function tests if the word list `L` is a valid elementary chain in the input graph `G`.
+
+#### Parameters
+
+-   `G`: The input graph.
+-   `L`: The list of words to be tested as a valid elementary chain.
+
+#### Returns
+
+-   A boolean value indicating whether the word list `L` is a valid elementary chain in the graph `G`.
+
+### `__bipartite(G, s, M)`
+
+This function is a helper function for testing if a graph is bipartite. It tests if the input graph `G` is bipartite starting from the source node `s`.
+
+#### Parameters
+
+-   `G`: The input graph.
+-   `s`: The source node.
+-   `M`: A list containing information about the partition of the graph nodes.
+
+#### Returns
+
+-   A boolean value indicating whether the input graph is bipartite starting from the source node `s`.
+
+### `bipartite(G)`
+
+This function checks if a graph `G` is bipartite.
+
+#### Parameters
+
+-   `G`: The input graph.
+
+#### Returns
+
+-   A boolean value indicating whether the graph is bipartite.
+
+### `acyclic(G)`
+
+This function checks if a graph `G` is acyclic.
+
+#### Parameters
+
+-   `G`: The input graph.
+
+#### Returns
+
+-   A boolean value indicating whether the graph is acyclic.
+
+### `is_cyclic(G)`
+
+This function checks if a graph `G` is cyclic. Please note that this function may not work in all cases and requires a review.
+
+#### Parameters
+
+-   `G`: The input graph.
+
+#### Returns
+
+-   A boolean value indicating whether the graph is cyclic.
+
 ## Authors
 
   
