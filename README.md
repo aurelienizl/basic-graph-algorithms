@@ -31,7 +31,7 @@ Clone the project
 
 ```bash
 
-git clone  https://github.com/Darkvgold/Basic-Graph-Algorithms
+git clone  https://github.com/aurelienizl/Basic-Graph-Algorithms
 
 ```
 
